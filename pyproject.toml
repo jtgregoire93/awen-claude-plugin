@@ -1,37 +1,27 @@
 [project]
 name = "awen-mcp"
-version = "0.1.0"
-description = "Gated Awen review MCP server: start_review, get_next_section, submit_checkpoint"
-requires-python = ">=3.12"
-dependencies = [
-    "mcp>=1.0,<2",
-    "httpx>=0.27",
-]
-
-# Never published to PyPI: the build backend only wires the console entry
-# point that `uv run awen-mcp` starts from the plugin folder.
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/awen_mcp"]
-
-[project.scripts]
-awen-mcp = "awen_mcp.__main__:main"
+version = "0.2.0"
+description = "Awen review MCP server for Claude: start_review, get_next_section, submit_checkpoint"
+requires-python = ">=3.9"
+# Standard library only. The plugin runs server/awen_mcp.py with the user's
+# python3; this file exists for the dev tools below.
+dependencies = []
 
 [dependency-groups]
 dev = [
+    # Interop test against the official MCP client (needs Python 3.10+).
+    "mcp>=1.0,<2; python_version >= '3.10'",
     "pytest>=8.0",
     "ruff>=0.5",
 ]
 
 [tool.ruff]
 line-length = 88
-target-version = "py312"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["server"]

@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "awen": {
-      "command": "uv",
-      "args": ["run", "--frozen", "--no-dev", "--directory", "${CLAUDE_PLUGIN_ROOT}", "awen-mcp"],
+      "command": "python3",
+      "args": ["-I", "${CLAUDE_PLUGIN_ROOT}/server/awen_mcp.py"],
       "env": {
         "AWEN_BASE_URL": "${AWEN_BASE_URL:-https://awen.press}"
       }

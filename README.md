@@ -9,9 +9,12 @@ Beta-reader role only.
 
 ## Requirements
 
-[uv](https://docs.astral.sh/uv/getting-started/installation/) must be on your
-`PATH`. The plugin starts a local MCP server with it. uv installs Python 3.12
-itself if you don't have it.
+Python 3.9 or later, as `python3` on your `PATH`. On macOS it comes with the
+Xcode Command Line Tools. The server is one file of standard-library Python,
+so nothing is installed or downloaded.
+
+It's a local (stdio) MCP server, so it runs in Claude Code and Cowork. It
+doesn't run in claude.ai chat.
 
 ## Use
 
@@ -54,13 +57,9 @@ from every result and error returned to Claude, and they are gone when the
 server exits. What Awen does with a review once it arrives is covered by the
 [Awen privacy policy](https://awen.press/privacy).
 
-On first start, uv downloads the dependencies pinned in `uv.lock` (`mcp`,
-`httpx`, and what they need) from PyPI and keeps a virtual environment in the
-plugin folder.
-
 ## Guarantees
 
-Enforced in `src/awen_mcp/core.py` and covered by the tests:
+Enforced in `server/awen_mcp.py` and covered by the tests:
 
 - Request URLs are built from a fixed template plus a token parsed out of a
   link on the configured origin. Redirects are never followed.
@@ -68,7 +67,8 @@ Enforced in `src/awen_mcp/core.py` and covered by the tests:
   the order.
 - Payloads must be plain JSON under 64 KB. Everything else is Awen's
   validation.
-- No open port, OAuth, database, or generic HTTP tool.
+- No open port, OAuth, database, or generic HTTP tool. No proxy settings are
+  read from the environment.
 
 ## Config
 
@@ -76,6 +76,10 @@ Enforced in `src/awen_mcp/core.py` and covered by the tests:
 https, except `http://localhost` for development.
 
 ## Development
+
+The dev tools (pytest, ruff, and the official MCP client for an interop test)
+are managed with [uv](https://docs.astral.sh/uv/). Users don't need any of
+them.
 
 ```sh
 uv sync

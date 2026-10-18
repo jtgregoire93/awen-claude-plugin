@@ -1,14 +1,14 @@
-"""ReviewCore against a fake Awen (httpx.MockTransport). No network."""
+"""ReviewCore against a fake Awen transport. No network."""
 
 from __future__ import annotations
 
 import json
 from typing import Any
+from urllib.parse import urlsplit
 
-import httpx
 import pytest
 
-from awen_mcp.core import ReviewCore, ReviewError
+from awen_mcp import Request, Response, ReviewCore, ReviewError, build_server
 
 BASE = "https://awen.test"
 SESSION = "S" * 43
@@ -16,25 +16,29 @@ REVIEWER = "R" * 43
 URL = f"{BASE}/review/{SESSION}"
 
 
+def _json(status: int, body: Any) -> Response:
+    return Response(status, json.dumps(body).encode())
+
+
 class FakeAwen:
     def __init__(self, sections: int = 2) -> None:
         self.sections = sections
         self.responded: set[int] = set()
-        self.calls: list[httpx.Request] = []
+        self.calls: list[Request] = []
         self.session_status = 200
         self.redirect = False
 
-    def __call__(self, req: httpx.Request) -> httpx.Response:
+    def __call__(self, req: Request) -> Response:
         self.calls.append(req)
         if self.redirect:
-            return httpx.Response(302, headers={"location": "https://evil.test/x"})
-        path = req.url.path
+            return Response(302, b"")
+        path = urlsplit(req.url).path
         if self.session_status != 200:
-            return httpx.Response(self.session_status, json={"error": "session gone"})
+            return _json(self.session_status, {"error": "session gone"})
         if path.endswith("/manifest"):
-            return httpx.Response(
+            return _json(
                 200,
-                json={
+                {
                     "book_title": "T",
                     "section_count": self.sections,
                     # the real server fills the session token into manifest text
@@ -54,29 +58,27 @@ class FakeAwen:
                 },
             )
         if path.endswith("/reviewers"):
-            return httpx.Response(200, json={"reviewer_token": REVIEWER})
-        if req.headers.get("authorization") != f"Bearer {REVIEWER}":
-            return httpx.Response(401, json={"error": "bad token"})
+            return _json(200, {"reviewer_token": REVIEWER})
+        if req.headers.get("Authorization") != f"Bearer {REVIEWER}":
+            return _json(401, {"error": "bad token"})
         n = int(path.split("/sections/")[1].split("/")[0])
         if n != 1 and (n - 1) not in self.responded:
-            return httpx.Response(
-                403, json={"error": "section not yet unlocked", "frontier": 1}
-            )
+            return _json(403, {"error": "section not yet unlocked", "frontier": 1})
         if path.endswith("/response"):
-            body = json.loads(req.content)
+            body = json.loads(req.body or b"")
             if "ratings" not in body:
-                return httpx.Response(
-                    422, json={"detail": "Grade every rubric area", "missing": ["x"]}
+                return _json(
+                    422, {"detail": "Grade every rubric area", "missing": ["x"]}
                 )
             self.responded.add(n)
             return (
-                httpx.Response(200, json={"done": True})
+                _json(200, {"done": True})
                 if n == self.sections
-                else httpx.Response(200, json={"next": n + 1})
+                else _json(200, {"next": n + 1})
             )
-        return httpx.Response(
+        return _json(
             200,
-            json={
+            {
                 "index": n,
                 "title": f"Scene {n}",
                 "html": f"<p>Text {n}. Echo {REVIEWER}</p><script>x</script>",
@@ -92,7 +94,7 @@ def fake() -> FakeAwen:
 
 @pytest.fixture
 def core(fake: FakeAwen) -> ReviewCore:
-    return ReviewCore(BASE, transport=httpx.MockTransport(fake))
+    return ReviewCore(BASE, transport=fake)
 
 
 def _all_text(*objs: Any) -> str:
@@ -233,8 +235,10 @@ def test_server_validation_error_is_surfaced_and_state_kept(
 def test_requests_are_pinned_to_base_and_role(core: ReviewCore, fake: FakeAwen) -> None:
     core.start_review(URL, "m")
     core.get_next_section()
-    assert {r.url.host for r in fake.calls} == {"awen.test"}
-    assert all(r.url.path.startswith(f"/api/review/{SESSION}/") for r in fake.calls)
+    assert {urlsplit(r.url).hostname for r in fake.calls} == {"awen.test"}
+    assert all(
+        urlsplit(r.url).path.startswith(f"/api/review/{SESSION}/") for r in fake.calls
+    )
 
 
 def test_insecure_base_url_rejected() -> None:
@@ -244,12 +248,10 @@ def test_insecure_base_url_rejected() -> None:
 
 
 def test_exactly_three_tools() -> None:
-    import asyncio
-
-    from awen_mcp.server import build_server
-
     srv = build_server(ReviewCore(BASE))
-    names = {t.name for t in asyncio.run(srv.list_tools())}
+    reply = srv.handle({"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
+    assert reply is not None
+    names = {t["name"] for t in reply["result"]["tools"]}
     assert names == {"start_review", "get_next_section", "submit_checkpoint"}
 
 
