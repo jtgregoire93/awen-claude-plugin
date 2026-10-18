@@ -26,7 +26,7 @@ from html.parser import HTMLParser
 from typing import Any, BinaryIO
 from urllib.parse import urlencode, urlsplit
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 DEFAULT_BASE_URL = "https://awen.press"
 ROLE = "beta-reader"
 MAX_RESPONSE_BYTES = 4_000_000
@@ -488,7 +488,8 @@ class Server:
                 f"({type(exc).__name__}).",
                 True,
             )
-        return _tool_text(json.dumps(out, indent=2, ensure_ascii=False), False)
+        compact = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+        return _tool_text(compact, False)
 
     def serve(self, stdin: BinaryIO, stdout: BinaryIO) -> None:
         for raw in stdin:
@@ -535,9 +536,9 @@ def _describe(tool: Tool) -> dict[str, Any]:
 # -- the three tools ----------------------------------------------------------
 
 INSTRUCTIONS = (
-    "Runs a gated Awen beta-read. start_review, then alternate "
-    "get_next_section and submit_checkpoint until done. Follow the "
-    "rules and rubric start_review returns, exactly."
+    "Runs an Awen beta-read from an author's review link. Call start_review, "
+    "then alternate get_next_section and submit_checkpoint until done. Rate "
+    "each section against the rubric and schema that start_review returns."
 )
 
 
@@ -552,8 +553,12 @@ def build_server(core: ReviewCore) -> Server:
                 name="start_review",
                 title="Start an Awen beta-read",
                 description=(
-                    "Begin a beta-read from the author's Awen review link. "
-                    "Returns the book's rules, rubric and submission schema."
+                    "Start an Awen beta-read. Use when the user gives an "
+                    "awen.press review link and asks for a read or review. "
+                    "Registers you as a beta-reader for that book and returns "
+                    "its rules, guidance, rubric and the schema each section's "
+                    "ratings must follow. Each call starts a new read at "
+                    "section 1."
                 ),
                 input_schema={
                     "type": "object",
@@ -587,10 +592,16 @@ def build_server(core: ReviewCore) -> Server:
             Tool(
                 name="get_next_section",
                 title="Read the next section",
-                description="Fetch the next unread section. Awen decides which one.",
+                description=(
+                    "Fetch the next section of the book as plain text. Call "
+                    "after start_review, and again after each accepted "
+                    "submit_checkpoint. Awen picks the section; you can't "
+                    "choose one or skip ahead."
+                ),
                 input_schema={"type": "object", "properties": {}},
                 annotations={
                     "readOnlyHint": True,
+                    "destructiveHint": False,
                     "openWorldHint": True,
                 },
                 handler=lambda a: core.get_next_section(),
@@ -599,8 +610,10 @@ def build_server(core: ReviewCore) -> Server:
                 name="submit_checkpoint",
                 title="Submit section ratings",
                 description=(
-                    "Submit the ratings for the section just read, as the "
-                    "schema from start_review describes."
+                    "Submit your ratings for the section you just read, shaped "
+                    "by the submission_schema from start_review. Call once per "
+                    "section. If Awen rejects the payload, fix what the error "
+                    "names and call again."
                 ),
                 input_schema={
                     "type": "object",
