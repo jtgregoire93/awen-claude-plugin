@@ -21,9 +21,10 @@ and lives in the private `awen` repo. Nothing from it is copied here.
 - Each release raises `version` in `.claude-plugin/plugin.json`,
   `pyproject.toml`, and `VERSION` in the server (a test checks they match).
   The directory picks up new commits on `main`.
-- `.claude-plugin/icon.png` became the listing icon when the plugin was first
-  saved in the developer portal. Changing the file later doesn't change the
-  listing.
+- The listing icon was fixed when the plugin was first saved in the developer
+  portal. Replacing the icon file later doesn't change the listing. Never
+  write an image's path in a file here, in backticks or a code block: the
+  directory holds the plugin for review when it does.
 - The README's "What it sends, and where" section must match what the code
   does. The directory's security scan checks for undisclosed traffic.
 
