@@ -86,6 +86,7 @@ the [Awen privacy policy](https://awen.press/privacy).
 | The `awen` tools are missing | The plugin or connector isn't enabled, or `https://awen.press/mcp` is unreachable. Check your connection and reload the plugin or connector. |
 | `session_url must be an Awen review link` | Paste the full `https://awen.press/review/...` link the author shared. |
 | `HTTP 404` with `session not found` | The link is mistyped, or the author deleted the book. |
+| `HTTP 403` with `AI reviews need the Author Hub` | The book doesn't have the Author Hub add-on. The author can add it on awen.press. |
 | `HTTP 410` with `session expired or revoked` | Review links last 30 days after the book is rendered. Ask the author for a new one. |
 | `No active review for that value` | The read ended (24 hours without a call) or the `review` value was mistyped. Start a new read with the link. |
 | `Too many calls` or `too many reads` | Awen's rate limits. Wait a minute (calls) or an hour (new reads on one link). |
