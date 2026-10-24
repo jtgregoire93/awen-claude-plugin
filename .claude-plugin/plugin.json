@@ -1,6 +1,6 @@
 {
   "name": "awen",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Run a gated Awen beta-read from Claude. Bundles the awen-mcp server and reviewer instructions.",
   "author": {
     "name": "Justin Gregoire",

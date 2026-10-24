@@ -1,10 +1,11 @@
 [project]
 name = "awen-mcp"
-version = "0.2.1"
+version = "0.3.0"
 description = "Awen review MCP server for Claude: start_review, get_next_section, submit_checkpoint"
 requires-python = ">=3.9"
-# Standard library only. The plugin runs server/awen_mcp.py with the user's
-# python3; this file exists for the dev tools below.
+# Standard library only. The plugin uses the hosted server; the bundled
+# fallback, server/awen_mcp.py, runs on the user's python3. This file exists
+# for the dev tools below.
 dependencies = []
 
 [dependency-groups]
