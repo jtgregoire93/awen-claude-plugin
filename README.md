@@ -24,7 +24,7 @@ In Claude Code (terminal, desktop app or IDE), add this repo as a plugin
 marketplace and install from it:
 
 ```text
-/plugin marketplace add jtgregoire93/awen-claude-plugin
+/plugin marketplace add https://github.com/jtgregoire93/awen-claude-plugin.git
 /plugin install awen@awen-press
 ```
 
