@@ -1,6 +1,6 @@
 [project]
 name = "awen-mcp"
-version = "0.2.1"
+version = "0.3.0"
 description = "Awen review MCP server for Claude: start_review, get_next_section, submit_checkpoint"
 requires-python = ">=3.9"
 # Standard library only. The plugin runs server/awen_mcp.py with the user's

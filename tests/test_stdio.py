@@ -1,4 +1,7 @@
-"""Real stdio round-trips: spawn the server the way .mcp.json does."""
+"""Real stdio round-trips with the bundled fallback server.
+
+.mcp.json points at the hosted endpoint; server/awen_mcp.py stays as the
+local/offline fallback the README documents, run as `python3 -I`."""
 
 from __future__ import annotations
 
@@ -16,14 +19,12 @@ ENV = {"AWEN_BASE_URL": "https://awen.test"}
 
 
 def _args() -> list[str]:
-    cfg = json.loads((ROOT / ".mcp.json").read_text())["mcpServers"]["awen"]
-    return [a.replace("${CLAUDE_PLUGIN_ROOT}", str(ROOT)) for a in cfg["args"]]
+    return ["-I", str(SERVER)]
 
 
-def test_mcp_json_runs_the_bundled_file_directly() -> None:
-    cfg = json.loads((ROOT / ".mcp.json").read_text())["mcpServers"]["awen"]
-    assert cfg["command"] == "python3"
-    assert _args() == ["-I", str(SERVER)]
+def test_mcp_json_uses_the_hosted_endpoint() -> None:
+    cfg = json.loads((ROOT / ".mcp.json").read_text())["mcpServers"]
+    assert cfg == {"awen": {"type": "http", "url": "https://awen.press/mcp"}}
 
 
 def test_raw_json_rpc_session() -> None:
