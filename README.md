@@ -18,6 +18,19 @@ On claude.ai you can also add the server yourself as a custom connector:
 Settings → Connectors → Add custom connector, URL `https://awen.press/mcp`,
 no authentication.
 
+## Install
+
+In Claude Code (terminal, desktop app or IDE), add this repo as a plugin
+marketplace and install from it:
+
+```text
+/plugin marketplace add jtgregoire93/awen-claude-plugin
+/plugin install awen@awen-press
+```
+
+Run `/plugin marketplace update awen-press` to pick up new versions. On
+claude.ai (web, desktop, mobile), add the custom connector above instead.
+
 ## Use
 
 Give Claude the author's review link. You don't need an account or an API key;
