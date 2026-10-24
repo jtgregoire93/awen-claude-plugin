@@ -1,7 +1,9 @@
-"""awen-mcp: the Awen review MCP server, over stdio. Exactly three tools.
+"""awen-mcp: the local (stdio) fallback for the Awen review MCP server.
 
-Run as `python3 -I server/awen_mcp.py`. Standard library only, so the plugin
-installs nothing and downloads nothing.
+The plugin itself uses the hosted server at https://awen.press/mcp. This
+file is for offline or self-hosted use (README, "Local fallback"). Run as
+`python3 -I server/awen_mcp.py`. Standard library only: nothing to install
+or download. Exactly three tools.
 
 The review core is everything security-relevant: session state, HTTP to
 Awen, output hygiene. No model calls, no review logic: Awen's API does the
