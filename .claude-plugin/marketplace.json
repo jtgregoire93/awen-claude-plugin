@@ -1,0 +1,20 @@
+{
+  "name": "awen-press",
+  "owner": {
+    "name": "Justin Gregoire",
+    "email": "j.t.gregoire.author@gmail.com"
+  },
+  "metadata": {
+    "description": "Awen's Claude plugin: run a gated beta-read of an author's book from Claude."
+  },
+  "plugins": [
+    {
+      "name": "awen",
+      "source": "./",
+      "description": "Run a gated Awen beta-read from Claude. Connects to Awen's hosted review server and bundles the reviewer instructions.",
+      "homepage": "https://awen.press",
+      "repository": "https://github.com/jtgregoire93/awen-claude-plugin",
+      "license": "MIT"
+    }
+  ]
+}
