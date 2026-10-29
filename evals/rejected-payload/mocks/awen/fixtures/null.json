@@ -1,0 +1,1 @@
+Error executing tool submit_checkpoint: Awen rejected the request (HTTP 422): {"detail": [{"loc": ["payload", "would_keep_reading"], "msg": "must be one of \"yes\", \"no\""}]}

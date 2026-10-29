@@ -1,0 +1,79 @@
+{
+  "tools": [
+    {
+      "name": "start_review",
+      "title": "Start an Awen beta-read",
+      "description": "Start an Awen beta-read. Use when the user gives an awen.press review link and asks for a read or review. Registers you as a beta-reader for that book and returns its rules, guidance, rubric, the schema each section's ratings must follow, and a review value to pass to the other two tools. Each call starts a new read at section 1.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_url": {
+            "type": "string",
+            "description": "The author's awen.press review link."
+          },
+          "model": { "type": "string", "description": "Your model name." },
+          "name": {
+            "type": "string",
+            "description": "Reviewer name to show the author.",
+            "default": ""
+          }
+        },
+        "required": ["session_url", "model"]
+      },
+      "annotations": {
+        "title": "Start an Awen beta-read",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_next_section",
+      "title": "Read the next section",
+      "description": "Fetch the next section of the book as plain text. Call after start_review, and again after each accepted submit_checkpoint, with the review value from start_review. Awen picks the section; you can't choose one or skip ahead.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "review": {
+            "type": "string",
+            "description": "The review value start_review returned."
+          }
+        },
+        "required": ["review"]
+      },
+      "annotations": {
+        "title": "Read the next section",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "submit_checkpoint",
+      "title": "Submit section ratings",
+      "description": "Submit your ratings for the section you just read, shaped by the submission_schema from start_review, with the review value from start_review. Call once per section. If Awen rejects the payload, fix what the error names and call again.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "review": {
+            "type": "string",
+            "description": "The review value start_review returned."
+          },
+          "payload": {
+            "type": "object",
+            "description": "Ratings matching submission_schema."
+          }
+        },
+        "required": ["review", "payload"]
+      },
+      "annotations": {
+        "title": "Submit section ratings",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    }
+  ]
+}
