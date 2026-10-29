@@ -37,6 +37,9 @@ Nothing from it is copied here.
   directory holds the plugin for review when it does.
 - The README's "What it sends, and where" section must match what the code
   does. The directory's security scan checks for undisclosed traffic.
+- No `.gitattributes` export-ignore or export-subst rules: the directory
+  refuses a plugin whose `git archive` differs from the checkout.
+  `scripts/package.sh` strips dev-only files from the upload bundle instead.
 
 ## Commands
 

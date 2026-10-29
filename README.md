@@ -41,8 +41,9 @@ Download `awen.plugin` from the
 and add it as an uploaded plugin on the same Plugins page. An uploaded
 plugin stays at that version until you upload a newer bundle.
 
-The bundle is this plugin folder zipped, nothing more. `scripts/package.sh`
-builds it from a checkout, and every tagged release attaches one.
+The bundle is this plugin folder zipped, minus the dev-only files (tests,
+CI, uv files). `scripts/package.sh` builds it from a checkout, and every
+tagged release attaches one.
 
 ### Without the plugin
 
