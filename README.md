@@ -155,6 +155,7 @@ uv sync
 uv run pytest
 uv run ruff check .
 claude plugin validate .
+claude plugin eval .    # eval suite in evals/, against mocked awen tools
 claude --plugin-dir .   # load this checkout in Claude Code
 ```
 

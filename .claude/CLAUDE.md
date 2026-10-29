@@ -17,6 +17,12 @@ Nothing from it is copied here.
   the private repo at `awen/api/routers/mcp.py` and `awen/api/mcp_review.py`;
   tool names, schemas, descriptions and annotations here (README, skill) must
   match it. Ship the server before merging a plugin change that depends on it.
+- `evals/mocks/awen/_tools.json` must equal the server's `tools/list`.
+  The private repo's CI checks it (`tests/test_mcp_plugin_contract.py`)
+  against the plugin branch with the same name as the awen branch, else
+  `main`. A tool change goes on same-named branches in both repos.
+- `evals/` ships with the plugin. Keep test fixtures free of text the
+  directory's safety scan could read as a real exfiltration attempt.
 - `server/awen_mcp.py` is the documented local/offline fallback, not wired
   into `.mcp.json`. One file, standard library only, runnable on Python 3.9
   (the macOS system Python). Ruff targets py39, and
@@ -39,4 +45,5 @@ uv sync
 uv run pytest
 uv run ruff check .
 claude plugin validate . --strict
+claude plugin eval . --no-publish   # evals/, mocked tools; costs ~$2 a full run
 ```
