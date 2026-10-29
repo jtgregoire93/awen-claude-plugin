@@ -25,7 +25,7 @@ Nothing from it is copied here.
   directory's safety scan could read as a real exfiltration attempt.
 - `server/awen_mcp.py` is the documented local/offline fallback, not wired
   into `.mcp.json`. One file, standard library only, runnable on Python 3.9
-  (the macOS system Python). Ruff targets py39, and
+  (the macOS system Python). Pyright targets py39, and
   `/usr/bin/python3 -I server/awen_mcp.py` is the check.
 - `pyproject.toml` and `uv.lock` are for dev tools only. Users never run uv.
 - Each release raises `version` in `.claude-plugin/plugin.json`,
@@ -43,7 +43,7 @@ Nothing from it is copied here.
 ```sh
 uv sync
 uv run pytest
-uv run ruff check .
+uv run pyright
 claude plugin validate . --strict
 claude plugin eval . --no-publish   # evals/, mocked tools; costs ~$2 a full run
 ```

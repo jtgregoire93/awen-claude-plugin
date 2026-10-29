@@ -167,13 +167,13 @@ On a python.org macOS install with no CA certificates, run
 
 ## Development
 
-The dev tools (pytest, ruff, and the official MCP client for an interop test)
+The dev tools (pytest, pyright, and the official MCP client for an interop test)
 are managed with uv. Users don't need any of them.
 
 ```sh
 uv sync
 uv run pytest
-uv run ruff check .
+uv run pyright
 claude plugin validate .
 claude plugin eval .    # eval suite in evals/, against mocked awen tools
 scripts/package.sh      # build dist/awen.plugin, the upload bundle for Claude and Cowork

@@ -84,7 +84,10 @@ def urllib_transport(req: Request) -> Response:
     except urllib.error.HTTPError as exc:
         resp = exc
     with resp:
-        return Response(resp.status, resp.read(MAX_RESPONSE_BYTES + 1))
+        status = resp.status
+        if status is None:  # a completed request always has one
+            raise urllib.error.URLError("response without a status")
+        return Response(status, resp.read(MAX_RESPONSE_BYTES + 1))
 
 
 def _network_error(exc: Exception) -> ReviewError:
@@ -344,7 +347,7 @@ class ReviewCore:
             s.done, s.served = True, False
             return {"done": True, "message": "Review complete. Thank the author."}
         nxt = data.get("next")
-        if nxt != s.current + 1 or nxt > s.section_count:
+        if not isinstance(nxt, int) or nxt != s.current + 1 or nxt > s.section_count:
             raise ReviewError("Awen returned an unexpected next section.")
         s.current, s.served = nxt, False
         return {"accepted": True, "next_section": nxt, "of": s.section_count}
