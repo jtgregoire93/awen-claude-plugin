@@ -1,0 +1,18 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run pytest
+      - name: The fallback server runs on a bare python3
+        run: python3 -I -c "import ast, sys; ast.parse(open('server/awen_mcp.py').read())"
+      - name: The bundle builds
+        run: scripts/package.sh

@@ -1,0 +1,11 @@
+# Dev-only files. `git archive` (run by scripts/package.sh) leaves them out
+# of the awen.plugin bundle that Claude and Cowork install from.
+.gitattributes export-ignore
+.gitignore export-ignore
+.github/ export-ignore
+.claude/ export-ignore
+.claude-plugin/marketplace.json export-ignore
+scripts/ export-ignore
+tests/ export-ignore
+pyproject.toml export-ignore
+uv.lock export-ignore

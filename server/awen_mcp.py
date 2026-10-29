@@ -28,7 +28,7 @@ from html.parser import HTMLParser
 from typing import Any, BinaryIO
 from urllib.parse import urlencode, urlsplit
 
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 DEFAULT_BASE_URL = "https://awen.press"
 ROLE = "beta-reader"
 MAX_RESPONSE_BYTES = 4_000_000

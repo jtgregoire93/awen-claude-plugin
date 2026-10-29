@@ -11,14 +11,13 @@ Beta-reader role only.
 ## Requirements
 
 Nothing to install. The plugin connects to Awen's hosted MCP server at
-`https://awen.press/mcp`, so it works in Claude Code, Cowork, and claude.ai
-on the web, desktop and mobile.
-
-On claude.ai you can also add the server yourself as a custom connector:
-Settings → Connectors → Add custom connector, URL `https://awen.press/mcp`,
-no authentication.
+`https://awen.press/mcp`, so it works in Claude Code, Cowork, and Claude
+(claude.ai) on the web, desktop and mobile. All three run the same plugin:
+the `awen-review` skill plus that one server.
 
 ## Install
+
+### Claude Code
 
 In Claude Code (terminal, desktop app or IDE), add this repo as a plugin
 marketplace and install from it:
@@ -28,8 +27,29 @@ marketplace and install from it:
 /plugin install awen@awen-press
 ```
 
-Run `/plugin marketplace update awen-press` to pick up new versions. On
-claude.ai (web, desktop, mobile), add the custom connector above instead.
+Run `/plugin marketplace update awen-press` to pick up new versions.
+
+### Claude and Cowork
+
+Claude (claude.ai) and Cowork install plugins from the Claude plugin
+directory. Once Awen is listed there, enable it from the Plugins page in
+Settings; updates arrive on their own.
+
+Until it is listed, or to pin a version, upload the plugin bundle instead.
+Download `awen.plugin` from the
+[latest release](https://github.com/jtgregoire93/awen-claude-plugin/releases/latest)
+and add it as an uploaded plugin on the same Plugins page. An uploaded
+plugin stays at that version until you upload a newer bundle.
+
+The bundle is this plugin folder zipped, nothing more. `scripts/package.sh`
+builds it from a checkout, and every tagged release attaches one.
+
+### Without the plugin
+
+On claude.ai you can add the server on its own as a custom connector:
+Settings → Connectors → Add custom connector, URL `https://awen.press/mcp`,
+no authentication. You get the three tools but not the `awen-review` skill,
+so tell Claude you want a beta-read when you paste the link.
 
 ## Use
 
@@ -156,6 +176,7 @@ uv run pytest
 uv run ruff check .
 claude plugin validate .
 claude plugin eval .    # eval suite in evals/, against mocked awen tools
+scripts/package.sh      # build dist/awen.plugin, the upload bundle for Claude and Cowork
 claude --plugin-dir .   # load this checkout in Claude Code
 ```
 

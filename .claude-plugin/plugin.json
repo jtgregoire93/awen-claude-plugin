@@ -1,6 +1,6 @@
 {
   "name": "awen",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Run a gated Awen beta-read from Claude. Connects to Awen's hosted review server and bundles the reviewer instructions.",
   "author": {
     "name": "Justin Gregoire",
@@ -9,6 +9,7 @@
   "homepage": "https://awen.press",
   "documentationUrl": "https://awen.press/how-it-works",
   "termsOfServiceUrl": "https://awen.press/terms",
+  "privacyPolicyUrl": "https://awen.press/privacy",
   "repository": "https://github.com/jtgregoire93/awen-claude-plugin",
   "license": "MIT",
   "keywords": ["awen", "beta-reader", "manuscript", "review", "writing"]
